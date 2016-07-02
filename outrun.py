@@ -18,12 +18,12 @@ class Horizon:
     def __init__(self, positions, colors=(BLACK,DARKBLUE,GOLDENROD)):
         try:
             self.y1,self.y2,self.y3 = positions
-        except ValueError:
+        except (ValueError,TypeError):
             raise TypeError("Invalid Position argument")
     
         try:
             self.c1,self.c2,self.c3 = colors
-        except ValueError:
+        except (ValueError,TypeError):
             raise TypeError("Invalid color argument")
 
     def draw(self, screen):
@@ -91,11 +91,8 @@ def main():
     size = width, height = FIELD_SIZE, FIELD_SIZE
     screen = pygame.display.set_mode(size)
     font = pygame.font.SysFont("Courier New", 18)
-
     
-    screen.fill(BLACK)
-    h = Horizon((300,100,100), (BLACK,DARKBLUE,NEONPINK))
-    h.draw(screen)
+    horizon = Horizon((300,100,100), (BLACK,DARKBLUE,NEONPINK))
     
     while 1:
         dt = clock.tick(120) #limit to 60 fps
@@ -104,12 +101,11 @@ def main():
             if event.type == pygame.QUIT: 
                 sys.exit()
         
+        screen.fill(BLACK)
+        horizon.draw(screen)
         # draw_grid(screen, (450,screen.get_rect().height*2/3-50), NEONBLUE, 4)
-        #draw_horizon(screen, screen.get_rect().height*2/3, 300,  glow=NEONPINK)
         
-      
         pygame.display.flip()
-
 
 def read_keyboard():
     x = pygame.key.get_pressed()
