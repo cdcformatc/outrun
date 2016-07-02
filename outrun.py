@@ -37,6 +37,19 @@ class Horizon:
         fill_gradient(screen, self.c2, self.c1, mid_box)
         fill_gradient(screen, self.c3, self.c2, bot_box)        
 
+class Grid:
+    def __init__(self, vanishing_point, color, width, divisions):
+        self.vanishing_point = vanishing_point
+        self.color = color
+        self.width = width
+        self.divisions = divisions
+        
+    def draw(self, screen):
+        screen_rect = screen.get_rect()
+        divwidth = screen_rect.width//divisions
+        for x in range(screen_rect.left, screen_rect.right+1, divwidth):
+            pygame.draw.line(screen, color, (x,screen_rect.bottom), vanishing_point, 5)
+        
 
 def fill_gradient(screen, color, gradient, rect=None, vertical=True, forward=False):
     """fill a surface with a gradient pattern
@@ -78,12 +91,6 @@ def fill_gradient(screen, color, gradient, rect=None, vertical=True, forward=Fal
                 min(max(a[2]+(rate[2]*(col-x1)),0),255)
             )
             fn_line(screen, color, (col,y1), (col,y2))
-
-def draw_grid(screen, vanishing_point, color, divisions):
-    screen_rect = screen.get_rect()
-    divwidth = screen_rect.width//divisions
-    for x in range(screen_rect.left, screen_rect.right+1, divwidth):
-        pygame.draw.line(screen, color, (x,screen_rect.bottom), vanishing_point, 5)
 
 def main():
     pygame.init()
