@@ -46,9 +46,9 @@ class Grid:
         
     def draw(self, screen):
         screen_rect = screen.get_rect()
-        divwidth = screen_rect.width//divisions
+        divwidth = screen_rect.width//self.divisions
         for x in range(screen_rect.left, screen_rect.right+1, divwidth):
-            pygame.draw.line(screen, color, (x,screen_rect.bottom), vanishing_point, 5)
+            pygame.draw.line(screen, self.color, (x,screen_rect.bottom), self.vanishing_point, self.width)
         
 
 def fill_gradient(screen, color, gradient, rect=None, vertical=True, forward=False):
@@ -100,6 +100,7 @@ def main():
     font = pygame.font.SysFont("Courier New", 18)
     
     horizon = Horizon((300,100,100), (BLACK,DARKBLUE,NEONPINK))
+    grid = Grid((450,500),NEONBLUE,5,5)
     
     while 1:
         dt = clock.tick(120) #limit to 60 fps
@@ -110,7 +111,7 @@ def main():
         
         screen.fill(BLACK)
         horizon.draw(screen)
-        # draw_grid(screen, (450,screen.get_rect().height*2/3-50), NEONBLUE, 4)
+        grid.draw(screen)
         
         pygame.display.flip()
 
