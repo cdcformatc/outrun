@@ -1,21 +1,21 @@
 from __future__ import division
-import os, sys, pygame
-os.environ['SDL_VIDEO_CENTERED'] = '1'
+import pygame
 
-RED = pygame.Color(255, 0 ,0, 100)
-BLACK = pygame.Color(0, 0 ,0, 100)
-DARKBLUE = pygame.Color(0, 0 ,50, 100)
-TRANSPARENT = pygame.Color(0, 0 ,0, 0)
-NEONBLUE = pygame.Color(0x67,0xC8,0xFF,100)
-NEONPINK = pygame.Color(252,98,208,100)
-GOLDENROD = pygame.Color(0xFF,0xB9,0x0F,100)
-
-#admin settings
-FIELD_SIZE = 900
-MAX_LEVELS = 1000
-
+class Grid:
+    def __init__(self, vanishing_point, color, width, divisions):
+        self.vanishing_point = vanishing_point
+        self.color = color
+        self.width = width
+        self.divisions = divisions
+        
+    def draw(self, screen):
+        screen_rect = screen.get_rect()
+        divwidth = screen_rect.width//self.divisions
+        for x in range(screen_rect.left, screen_rect.right+1, divwidth):
+            pygame.draw.line(screen, self.color, (x,screen_rect.bottom), self.vanishing_point, self.width)
+        
 class Horizon:
-    def __init__(self, positions, colors=(BLACK,DARKBLUE,GOLDENROD)):
+    def __init__(self, positions, colors):
         try:
             self.y1,self.y2,self.y3 = positions
         except (ValueError,TypeError):
@@ -35,22 +35,8 @@ class Horizon:
         
         screen.fill(self.c1, top_box)
         fill_gradient(screen, self.c2, self.c1, mid_box)
-        fill_gradient(screen, self.c3, self.c2, bot_box)        
-
-class Grid:
-    def __init__(self, vanishing_point, color, width, divisions):
-        self.vanishing_point = vanishing_point
-        self.color = color
-        self.width = width
-        self.divisions = divisions
+        fill_gradient(screen, self.c3, self.c2, bot_box) 
         
-    def draw(self, screen):
-        screen_rect = screen.get_rect()
-        divwidth = screen_rect.width//self.divisions
-        for x in range(screen_rect.left, screen_rect.right+1, divwidth):
-            pygame.draw.line(screen, self.color, (x,screen_rect.bottom), self.vanishing_point, self.width)
-        
-
 def fill_gradient(screen, color, gradient, rect=None, vertical=True, forward=False):
     """fill a surface with a gradient pattern
     Parameters:
@@ -91,34 +77,4 @@ def fill_gradient(screen, color, gradient, rect=None, vertical=True, forward=Fal
                 min(max(a[2]+(rate[2]*(col-x1)),0),255)
             )
             fn_line(screen, color, (col,y1), (col,y2))
-
-def main():
-    pygame.init()
-    clock = pygame.time.Clock()  
-    size = width, height = FIELD_SIZE, FIELD_SIZE
-    screen = pygame.display.set_mode(size)
-    font = pygame.font.SysFont("Courier New", 18)
-    
-    horizon = Horizon((300,100,100), (BLACK,DARKBLUE,NEONPINK))
-    grid = Grid((450,500),NEONBLUE,5,5)
-    
-    while 1:
-        dt = clock.tick(120) #limit to 60 fps
-        read_keyboard()
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT: 
-                sys.exit()
-        
-        screen.fill(BLACK)
-        horizon.draw(screen)
-        grid.draw(screen)
-        
-        pygame.display.flip()
-
-def read_keyboard():
-    x = pygame.key.get_pressed()
-    if x[pygame.K_ESCAPE] or x[pygame.K_q] or x[pygame.K_BREAK]:
-        pygame.event.post(pygame.event.Event(pygame.QUIT))
-        
-if __name__ == "__main__":
-    main()
+            
